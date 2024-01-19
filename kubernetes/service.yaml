@@ -1,0 +1,18 @@
+# kubernetes/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: myapp-service
+spec:
+  selector:
+    app: myapp
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000
+      name: api-port
+    - protocol: TCP
+      port: 5001
+      targetPort: 5001
+      name: app-port
+  type: LoadBalancer

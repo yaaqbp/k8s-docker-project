@@ -1,0 +1,53 @@
+# kubernetes/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - name: api
+        image: woo45/myapp-api
+        env:
+          - name: USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: secret-api-key
+                key: username
+          - name: PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: secret-api-key
+                key: password
+        volumeMounts:
+          - name: task-pv-storage
+            mountPath: /data
+                
+      - name: app
+        image: woo45/myapp-app
+        env:
+          - name: USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: secret-api-key
+                key: username
+          - name: PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: secret-api-key
+                key: password
+
+      volumes:
+        - name: task-pv-storage
+          persistentVolumeClaim:
+            claimName: db-pvc
+      
+        
